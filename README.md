@@ -13,6 +13,19 @@ exit
 #=> goodbye cruel world
 ```
 
+# Installation
+
+On your build_config.rb
+
+```
+MRuby::Build.new do |conf|
+  # by mgem
+  conf.gem :mgem => 'mruby-io-console'
+  # by github
+  conf.gem :github => 'ksss/mruby-io-console'
+end
+```
+
 # Implementation
 
 Dependent on `mrb->atexit_stack`.
