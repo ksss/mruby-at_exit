@@ -3,11 +3,13 @@
 #include "mruby/array.h"
 
 static void
-mrb_at_exit_callback(mrb_state *mrb)
+mrb_exec_at_exit(mrb_state *mrb)
 {
-  mrb_value callbacks = mrb_obj_iv_get(mrb, (struct RObject*)mrb->kernel_module, mrb_intern_lit(mrb, "__at_exit_stack__"));
-  mrb_value block = mrb_ary_pop(mrb, callbacks);
-  mrb_funcall(mrb, block, "call", 0, NULL);
+  mrb_value stack = mrb_obj_iv_get(mrb, (struct RObject*)mrb->kernel_module, mrb_intern_lit(mrb, "__at_exit_stack__"));
+  mrb_int i;
+  for (i = RARRAY_LEN(stack); 0 < i; i--) {
+    mrb_funcall(mrb, mrb_ary_ref(mrb, stack, i - 1), "call", 0, NULL);
+  }
 }
 
 /*
@@ -45,7 +47,6 @@ mrb_f_at_exit(mrb_state *mrb, mrb_value krn)
     mrb_obj_iv_set(mrb, (struct RObject*)mrb->kernel_module, mrb_intern_lit(mrb, "__at_exit_stack__"), callbacks);
   }
   mrb_ary_push(mrb, callbacks, block);
-  mrb_state_atexit(mrb, mrb_at_exit_callback);
   return block;
 }
 
@@ -59,4 +60,5 @@ mrb_mruby_at_exit_gem_init(mrb_state* mrb)
 void
 mrb_mruby_at_exit_gem_final(mrb_state* mrb)
 {
+  mrb_exec_at_exit(mrb);
 }
