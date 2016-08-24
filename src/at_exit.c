@@ -7,6 +7,10 @@ mrb_exec_at_exit(mrb_state *mrb)
 {
   mrb_value stack = mrb_obj_iv_get(mrb, (struct RObject*)mrb->kernel_module, mrb_intern_lit(mrb, "__at_exit_stack__"));
   mrb_int i;
+
+  if (!mrb_array_p(stack)) {
+    return;
+  }
   for (i = RARRAY_LEN(stack); 0 < i; i--) {
     mrb_funcall(mrb, mrb_ary_ref(mrb, stack, i - 1), "call", 0, NULL);
   }
