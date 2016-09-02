@@ -20,9 +20,9 @@ On your build_config.rb
 ```
 MRuby::Build.new do |conf|
   # by mgem
-  conf.gem :mgem => 'mruby-io-console'
+  conf.gem :mgem => 'mruby-at_exit'
   # by github
-  conf.gem :github => 'ksss/mruby-io-console'
+  conf.gem :github => 'ksss/mruby-at_exit'
 end
 ```
 
