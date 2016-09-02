@@ -1,19 +1,35 @@
 #include "mruby.h"
 #include "mruby/variable.h"
 #include "mruby/array.h"
+#include "mruby/proc.h"
 
 static void
 mrb_exec_at_exit(mrb_state *mrb)
 {
   mrb_value stack = mrb_obj_iv_get(mrb, (struct RObject*)mrb->kernel_module, mrb_intern_lit(mrb, "__at_exit_stack__"));
   mrb_int i;
+  struct RObject *saved_exc;
+  mrb_value result;
 
   if (!mrb_array_p(stack)) {
     return;
   }
+
+  /*
+  Main exception was already printed on the here.
+  But riase this error again on mrb_funcall if mrb->exc setted.
+  So, Avoid by mrb->exc = NULL.
+  */
+  saved_exc = mrb->exc;
+  mrb->exc = NULL;
   for (i = RARRAY_LEN(stack); 0 < i; i--) {
-    mrb_funcall(mrb, mrb_ary_ref(mrb, stack, i - 1), "call", 0, NULL);
+    result = mrb_funcall(mrb, mrb_ary_ref(mrb, stack, i - 1), "call", 0, NULL);
+    if (mrb_type(result) == MRB_TT_EXCEPTION) {
+      mrb_print_error(mrb);
+      mrb->exc = NULL; /* Avoid before exception */
+    }
   }
+  mrb->exc = saved_exc;
 }
 
 /*
