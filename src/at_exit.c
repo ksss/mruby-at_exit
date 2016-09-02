@@ -1,7 +1,6 @@
 #include "mruby.h"
 #include "mruby/variable.h"
 #include "mruby/array.h"
-#include "mruby/proc.h"
 
 static void
 mrb_exec_at_exit(mrb_state *mrb)
