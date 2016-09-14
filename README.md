@@ -26,20 +26,6 @@ MRuby::Build.new do |conf|
 end
 ```
 
-# Implementation
-
-Dependent on `mrb->atexit_stack`.
-
-# Configure
-
-## Call malloc or realloc every time mruby call `at_exit`
-
-Don't define `MRB_FIXED_STATE_ATEXIT_STACK_SIZE` and `MRB_FIXED_STATE_ATEXIT_STACK` in mrbconf.h
-
-## Use static memory
-
-Define `MRB_FIXED_STATE_ATEXIT_STACK_SIZE` and `MRB_FIXED_STATE_ATEXIT_STACK` in mrbconf.h
-
 # Doc
 
 http://docs.ruby-lang.org/en/2.3.0/Kernel.html#method-i-at_exit
